@@ -43,9 +43,23 @@ def reject(path: Path):
     shutil.move(str(path), str(rej / path.name))
 
 
+def _next_seq(menu: str) -> int:
+    """train/val 기존 번호 다음부터 시작 (덮어쓰기 방지)."""
+    mx = 0
+    for dest in ("train", "val"):
+        d = BASE / "datasets" / dest / menu
+        if not d.is_dir():
+            continue
+        for p in d.iterdir():
+            stem = p.stem
+            if stem.startswith(f"{menu}_") and stem[len(menu) + 1:].isdigit():
+                mx = max(mx, int(stem[len(menu) + 1:]))
+    return mx + 1
+
+
 def save_selection(menu: str, selected: list, val_ratio: float) -> int:
     """선택 리스트를 datasets로 이동. 반환: 저장 장수."""
-    seq = 1
+    seq = _next_seq(menu)
     for p in selected:
         dest = plan_destination(seq, val_ratio)
         store(p, menu, dest, seq)

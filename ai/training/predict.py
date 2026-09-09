@@ -50,9 +50,14 @@ def _load_model(weights: Path, num_classes: int, device: str):
 def predict(image_path: str, weights: str = "../models/best.pt", topk: int = 3):
     """백엔드에서 import해서 사용: from predict import predict"""
     w = (BASE / weights).resolve() if not Path(weights).is_absolute() else Path(weights)
-    if (not _TORCH_OK) or (not w.exists()) or (not Path(image_path).exists()):
+    if not _TORCH_OK:
+        return [{"label": "직접입력 필요", "confidence": 0.0, "kcal": 0, "reason": "torch 미설치"}]
+    if not w.exists():
         return [{"label": "직접입력 필요", "confidence": 0.0, "kcal": 0,
-                 "reason": "모델/이미지 없음" if not w.exists() else "torch 미설치"}]
+                 "reason": f"가중치 없음: {w}"}]
+    if not Path(image_path).exists():
+        return [{"label": "직접입력 필요", "confidence": 0.0, "kcal": 0,
+                 "reason": f"이미지 없음: {image_path}"}]
     classes = _classes()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = _load_model(w, len(classes), device)
