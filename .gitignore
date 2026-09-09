@@ -16,6 +16,7 @@ backend/uploads/*
 # 학습 산출물 (용량 큼, 재생성 가능)
 ai/models/*.pt
 ai/models/training_log.csv
-ai/datasets/
+ai/datasets/*
+!ai/datasets/README.md
 # diet.db-journal 등
 *.db-journal
