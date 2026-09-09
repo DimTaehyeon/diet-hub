@@ -18,5 +18,8 @@ ai/models/*.pt
 ai/models/training_log.csv
 ai/datasets/*
 !ai/datasets/README.md
+# 크롤링 원본 (저작권·용량, 로컬 전용)
+ai/raw/*
+!ai/raw/README.md
 # diet.db-journal 등
 *.db-journal
