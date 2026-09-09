@@ -1,0 +1,16 @@
+# 운영 DB (PostgreSQL 16). 개발 기본값은 SQLite라서 없어도 됨.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: dietdb
+      POSTGRES_USER: diet
+      POSTGRES_PASSWORD: dietpw
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
