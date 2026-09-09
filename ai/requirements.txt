@@ -6,3 +6,5 @@ pillow>=10.0
 pyyaml>=6.0
 tqdm>=4.66
 icrawler>=3.0  # 수집용 (torch 없이 crawl.py만 쓸 때도 설치)
+selenium>=4.0  # 네이버 수집용 (헤드리스 크롬)
+webdriver-manager>=4.0  # 크롬드라이버 자동 설치
