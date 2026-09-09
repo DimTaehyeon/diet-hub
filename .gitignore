@@ -16,6 +16,8 @@ backend/uploads/*
 # 학습 산출물 (용량 큼, 재생성 가능)
 ai/models/*.pt
 ai/models/training_log.csv
+ai/models/labels.json
+ai/models/metrics.json
 ai/datasets/*
 !ai/datasets/README.md
 # 크롤링 원본 (저작권·용량, 로컬 전용)
