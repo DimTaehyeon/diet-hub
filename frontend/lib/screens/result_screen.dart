@@ -79,7 +79,9 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  Future<void> _save() async {
+  int _savedCount = 0; // 문제2: 한 사진에서 여러 건 저장 시 카운트
+
+  Future<void> _save({bool addAnother = false}) async {
     if (_foodName.isEmpty) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('메뉴를 선택/입력하세요')));
@@ -94,9 +96,21 @@ class _ResultScreenState extends State<ResultScreen> {
         kcal: _totalKcal,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('$_foodName $_totalKcal kcal 저장됨')));
-      Navigator.of(context).popUntil((r) => r.isFirst);
+      _savedCount++;
+      if (addAnother) {
+        // 문제2: 같은 사진에서 다음 음식 계속 기록 (선택 초기화 후 화면 유지)
+        setState(() {
+          _foodName = '';
+          _kcalPerServing = 0;
+          _serving = 1.0;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$_savedCount건 저장됨. 사진 속 다음 음식을 골라주세요.')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$_totalKcal kcal 저장됨 (총 $_savedCount건)')));
+        Navigator.of(context).popUntil((r) => r.isFirst);
+      }
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('저장 실패: $e')));
@@ -170,9 +184,18 @@ class _ResultScreenState extends State<ResultScreen> {
             onChanged: (v) => setState(() => _mealType = v!),
           ),
           const SizedBox(height: 12),
+          if (_savedCount > 0)
+            Text('이 사진에서 $_savedCount건 저장됨',
+                style: const TextStyle(color: Colors.green)),
           ElevatedButton(
-            onPressed: _saving ? null : _save,
+            onPressed: _saving ? null : () => _save(),
             child: Text(_saving ? '저장 중...' : '캘린더에 저장'),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            // 문제2: 한 상 차림처럼 여러 음식이면 이 버튼으로 계속 추가
+            onPressed: _saving ? null : () => _save(addAnother: true),
+            child: const Text('저장 + 이 사진의 다른 음식 추가'),
           ),
         ],
       ),

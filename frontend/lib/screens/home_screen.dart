@@ -26,9 +26,28 @@ class _HomeScreenState extends State<HomeScreen> {
       _error = null;
     });
     try {
-      // 카메라로 촬영 (에뮬레이터면 갤러리에서 선택해도 됨)
-      final XFile? file =
-          await ImagePicker().pickImage(source: ImageSource.camera);
+      // 문제1: 촬영 vs 앨범 선택지를 먼저 묻는다
+      final ImageSource? src = await showDialog<ImageSource>(
+        context: context,
+        builder: (_) => SimpleDialog(
+          title: const Text('사진 가져오기'),
+          children: [
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, ImageSource.camera),
+              child: const Text('카메라로 촬영'),
+            ),
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, ImageSource.gallery),
+              child: const Text('앨범에서 선택'),
+            ),
+          ],
+        ),
+      );
+      if (src == null) {
+        setState(() => _loading = false);
+        return; // 사용자가 취소
+      }
+      final XFile? file = await ImagePicker().pickImage(source: src);
       if (file == null) {
         setState(() => _loading = false);
         return; // 사용자가 취소
