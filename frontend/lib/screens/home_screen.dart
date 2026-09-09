@@ -33,8 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => _loading = false);
         return; // 사용자가 취소
       }
-      // 서버에 전송 후 결과 화면으로 이동
-      final r = await _api.predict(file.path);
+      // 서버에 전송 후 결과 화면으로 이동 (바이트 전송: 웹/모바일 공용)
+      final bytes = await file.readAsBytes();
+      final r = await _api.predict(bytes: bytes, filename: file.name);
       if (!mounted) return;
       Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => ResultScreen(

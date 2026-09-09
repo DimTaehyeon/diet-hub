@@ -10,12 +10,12 @@ class ApiService {
     receiveTimeout: const Duration(seconds: 30),
   ));
 
-  // 사진 업로드 -> 음식 TOP3 예측
+  // 사진 업로드 -> 음식 TOP3 예측 (웹/모바일 공용: 바이트 전송)
   // 반환: {predictions, image_id, need_manual_input}
   Future<({List<Prediction> preds, String imageId, bool needManual})> predict(
-      String imagePath) async {
+      {required List<int> bytes, required String filename}) async {
     final form = FormData.fromMap({
-      'image': await MultipartFile.fromFile(imagePath),
+      'image': MultipartFile.fromBytes(bytes, filename: filename),
     });
     final res = await _dio.post('/api/predict', data: form);
     final data = res.data['data'];
