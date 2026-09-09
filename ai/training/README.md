@@ -5,7 +5,7 @@
 ai/datasets/train/김치찌개/xxx.jpg
 ai/datasets/train/비빔밥/xxx.jpg
 ai/datasets/val/김치찌개/xxx.jpg
-... 20개 클래스, 클래스당 최소 300장 권장
+... 22개 클래스, 클래스당 최소 300장 권장
 ```
 - `data.yaml`의 names 순서 == `../models/classes.txt` 순서 (고정)
 - 출처: AI-Hub 한식이미지 / Kaggle Food-101 + 직접 촬영 보충
