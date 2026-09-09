@@ -1,0 +1,32 @@
+# 데이터셋 설정 (ImageFolder 구조 가정)
+# datasets/train/{클래스명}/xxx.jpg
+# datasets/val/{클래스명}/xxx.jpg
+path: ../datasets
+train: train
+val: val
+img_size: 224
+names:
+  0: 김치찌개
+  1: 된장찌개
+  2: 비빔밥
+  3: 불고기
+  4: 삼겹살
+  5: 치킨
+  6: 피자
+  7: 햄버거
+  8: 라면
+  9: 김밥
+  10: 떡볶이
+  11: 삼계탕
+  12: 냉면
+  13: 짜장면
+  14: 짬뽕
+  15: 초밥
+  16: 샐러드
+  17: 계란후라이
+  18: 밥
+  19: 국수
+# 출처 예시:
+# - AI-Hub 한식이미지 (https://aihub.or.kr) 다운로드 후 클래스 폴더명으로 정리
+# - Kaggle Food-101 + 직접 수집한 한식 사진으로 보충
+# - 클래스당 최소 300장 권장 (train 240 / val 60)

@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+# pytest
+.pytest_cache/
+# 환경변수 (예시는 커밋, 실제값 제외)
+.env
+# 로컬 DB
+*.db
+*.sqlite3
+# 업로드 이미지 (테스트 잔여물, 코드는 폴더 자동생성)
+backend/uploads/*
+!backend/uploads/.gitkeep
+# 학습 산출물 (용량 큼, 재생성 가능)
+ai/models/*.pt
+ai/models/training_log.csv
+ai/datasets/
+# diet.db-journal 등
+*.db-journal

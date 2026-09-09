@@ -1,0 +1,7 @@
+# CPU 기준 (VRAM 있으면 CUDA 자동 사용, 코드는 동일)
+# 설치: pip install -r requirements.txt  (약 300MB, 3~5분 소요)
+torch --index-url https://download.pytorch.org/whl/cpu
+torchvision --index-url https://download.pytorch.org/whl/cpu
+pillow>=10.0
+pyyaml>=6.0
+tqdm>=4.66
