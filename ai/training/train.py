@@ -22,7 +22,7 @@ def build_model(num_classes):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="한식 20종 분류 학습")
+    ap = argparse.ArgumentParser(description="한식 21종 분류 학습")
     ap.add_argument("--datasets", default="../datasets", help="datasets/ 루트 (train/, val/ 포함)")
     ap.add_argument("--epochs", type=int, default=15)
     ap.add_argument("--batch", type=int, default=32)
