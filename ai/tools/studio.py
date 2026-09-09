@@ -38,8 +38,10 @@ class Studio(tk.Tk):
         self.pages = {}
         self.pages["collect"] = self._page_collect()
         self.pages["review"] = self._page_review()
+        self.row_widgets: dict = {}  # menu -> {train, val, raw, st, crawl}
         self.show_collect()
         self.after(1000, self._poll)
+        self.after(3000, self._auto)
 
     # ---------- 공통 ----------
     def show_collect(self):
@@ -51,6 +53,31 @@ class Studio(tk.Tk):
         self.pages["collect"].pack_forget()
         self.pages["review"].pack(side="right", fill="both", expand=True)
         self._reload_review_list()
+
+    def _auto(self):
+        """3초마다 숫자만 갱신 (위젯 재생성 없음 → 깜빡임·부하 없음)."""
+        try:
+            if self.pages["collect"].winfo_ismapped():
+                data = R.counts(BASE)
+                if set(data) == set(self.row_widgets):
+                    for m, c in data.items():
+                        w = self.row_widgets[m]
+                        w["train"].config(text=c["train"])
+                        w["val"].config(text=c["val"])
+                        w["raw"].config(text=c["raw"])
+                        ok = c["train"] >= TRAIN_OK and c["val"] >= VAL_OK
+                        w["st"].config(text="OK" if ok else "부족",
+                                       fg="green" if ok else "red")
+                        run = m in self.running
+                        w["crawl"].config(text="수집중.." if run else "수집시작",
+                                          state="disabled" if run else "normal")
+                    run = f"수집중: {len(self.running)}건" if self.running else ""
+                    self.status_l.config(text=run)
+                else:
+                    self.refresh_table()
+        except Exception:
+            pass
+        self.after(3000, self._auto)
 
     def _poll(self):
         """워커 스레드 완료 감시 → 버튼 복구 + 현황 갱신."""
@@ -106,21 +133,30 @@ class Studio(tk.Tk):
         return pg
 
     def refresh_table(self):
+        """구조 변경 시에만 전체 재생성. 평소 갱신은 _auto가 제자리에서 처리."""
         for w in self.rows_f.winfo_children():
             w.destroy()
+        self.row_widgets = {}
         data = R.counts(BASE)
         for i, (m, c) in enumerate(data.items()):
             ok = c["train"] >= TRAIN_OK and c["val"] >= VAL_OK
             st = "OK" if ok else "부족"
             vals = [m, c["train"], c["val"], c["raw"], st]
+            keys = [None, "train", "val", "raw", "st"]
+            refs = {}
             for j, v in enumerate(vals):
                 fg = "green" if (j == 4 and ok) else ("red" if j == 4 else "black")
-                tk.Label(self.rows_f, text=v, width=10 if j else 14,
-                         font=("맑은고딕", 11), fg=fg).grid(row=i, column=j, padx=2, pady=2)
+                lb = tk.Label(self.rows_f, text=v, width=10 if j else 14,
+                              font=("맑은고딕", 11), fg=fg)
+                lb.grid(row=i, column=j, padx=2, pady=2)
+                if keys[j]:
+                    refs[keys[j]] = lb
             b1 = tk.Button(self.rows_f, text="수집시작" if m not in self.running else "수집중..",
                            state="disabled" if m in self.running else "normal",
                            command=lambda m=m: self._start_crawl(m))
             b1.grid(row=i, column=5, padx=2)
+            refs["crawl"] = b1
+            self.row_widgets[m] = refs
             tk.Button(self.rows_f, text="검수",
                       command=lambda m=m: self._open_review(m)).grid(row=i, column=6, padx=2)
             tk.Button(self.rows_f, text="삭제", fg="red",
