@@ -1,0 +1,1 @@
+# raw (git 제외)\n\ncrawl.py 수집 원본 보관. review.py 검수 후 datasets/로 이동.`n
