@@ -7,7 +7,8 @@ plugins {
 android {
     namespace = "com.example.diet_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // 설치된 NDK 버전에 고정 (flutter.ndkVersion=28.x 미설치 회피)
+    ndkVersion = "30.0.16248370"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
