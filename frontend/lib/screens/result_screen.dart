@@ -134,15 +134,23 @@ class _ResultScreenState extends State<ResultScreen> {
                 child: Text('AI 확신이 낮아요. 아래에서 직접 메뉴를 골라주세요.'),
               ),
             ),
-          const Text('AI 예측 TOP3', style: TextStyle(fontWeight: FontWeight.bold)),
-          ...widget.predictions.map((p) => ListTile(
-                title: Text('${p.label} (${(p.confidence * 100).toStringAsFixed(1)}%)'),
-                subtitle: Text('${p.kcal} kcal / 1인분'),
-                trailing: _foodName == p.label
-                    ? const Icon(Icons.check_circle, color: Colors.green)
-                    : null,
-                onTap: () => _pick(p),
-              )),
+          const Text('AI 인식 결과', style: TextStyle(fontWeight: FontWeight.bold)),
+          // 요청1: TOP3 목록 대신 1위만 크게 표시 (수정은 직접 검색으로)
+          Builder(builder: (_) {
+            final top = widget.predictions.isNotEmpty ? widget.predictions.first : null;
+            final known = top != null && top.label != '직접입력 필요';
+            return Card(
+              color: known ? null : const Color(0xFFFFF3E0),
+              child: ListTile(
+                leading: const Icon(Icons.restaurant, size: 36),
+                title: Text(known ? top.label : '메뉴를 직접 선택하세요',
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                subtitle: Text(known
+                    ? '확신 ${(top.confidence * 100).toStringAsFixed(1)}% · ${top.kcal} kcal/1인분'
+                    : 'AI가 못 알아봤습니다. 아래 검색을 이용하세요.'),
+              ),
+            );
+          }),
           const Divider(),
           // 직접 검색
           Row(
