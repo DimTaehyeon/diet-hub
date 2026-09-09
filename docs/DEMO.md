@@ -30,7 +30,10 @@ curl "http://127.0.0.1:8000/api/calendar?year=2026&month=09"
 curl -X POST http://127.0.0.1:8000/api/predict -F "image=@meal.jpg"
 ```
 
-## 현재 한계 (솔직 기록)
+## 현재 한계
 - `ai/models/best.pt` 없음 → predict는 "직접입력 필요" 폴백. P2 데이터 수집+학습 후 자동 실측 전환
 - PC에 Flutter SDK / torch 미설치 → 프론트 실기동·모델 학습은 사용자 PC에서 실행 필요
 - uploads/*.jpg, *.db는 git 제외 권장 (.gitignore 추가 예정)
+
+## 실습 현황
+- 2026-09-09 실습 : Swagger 전구간 확인 완료
