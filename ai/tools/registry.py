@@ -121,8 +121,16 @@ def delete_class(base: Path, name: str) -> tuple[bool, str]:
         return False, "없는 메뉴입니다."
     classes.remove(name)
     save_all(base, classes)
-    # 폴더·백엔드 seed는 보존 (기록/파일 유실 방지)
-    return True, "등록 해제됨 (폴더·백엔드 기록은 보존)"
+    # 이미지·폴더까지 완전 삭제 (raw/_reject 포함)
+    removed = 0
+    for d in (_p(base, "datasets", "train", name),
+              _p(base, "datasets", "val", name),
+              _p(base, "raw", name)):
+        if d.is_dir():
+            removed += sum(1 for _ in d.rglob("*") if _.is_file())
+            shutil.rmtree(d)
+    # 백엔드 seed·DB 기록은 유지 (기존 식단 기록 보호)
+    return True, f"삭제됨 (이미지 {removed}장 포함)"
 
 
 def counts(base: Path) -> dict:

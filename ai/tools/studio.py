@@ -208,7 +208,8 @@ class Studio(tk.Tk):
         self.refresh_table()
 
     def _delete(self, menu: str):
-        if not messagebox.askokcancel("확인", f"'{menu}' 등록을 해제할까요?\n(사진 파일은 보존됩니다)"):
+        if not messagebox.askokcancel(
+                "확인", f"'{menu}'를 완전히 삭제할까요?\n수집·검수된 사진 파일까지 모두 지워집니다."):
             return
         ok, msg = R.delete_class(BASE, menu)
         (messagebox.showinfo if ok else messagebox.showwarning)("알림", msg)
