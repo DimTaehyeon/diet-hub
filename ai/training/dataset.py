@@ -31,8 +31,13 @@ class FoodImageDataset(Dataset):
     def __init__(self, root: str, transform=None):
         self.root = Path(root)
         self.transform = transform
-        # 클래스 = 하위 폴더명 (가나다 순 고정 -> classes.txt 순서와 일치시켜야 함)
-        classes_path = Path(__file__).resolve().parent.parent / "models" / "classes.txt"
+        # 클래스 목록: 기본 classes.txt, 미니 학습時は DIET_CLASSES 환경변수로 교체
+        # 예: $env:DIET_CLASSES='models/classes_mini.txt'; python train.py --out ../models/mini.pt
+        import os
+        override = os.environ.get("DIET_CLASSES", "")
+        models_dir = Path(__file__).resolve().parent.parent / "models"
+        classes_path = (Path(override) if Path(override).is_absolute()
+                        else models_dir.parent / override) if override else models_dir / "classes.txt"
         if classes_path.exists():
             self.classes = [l.strip() for l in classes_path.read_text(encoding="utf-8").splitlines() if l.strip()]
         else:
