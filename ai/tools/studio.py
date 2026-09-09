@@ -82,14 +82,16 @@ class Studio(tk.Tk):
         self.status_l.pack(side="left", padx=8)
 
         head = ["메뉴", "train", "val", "raw", "상태", "수집", "검수", "삭제"]
+        body = tk.Frame(pg)
+        body.pack(fill="both", expand=True, padx=8)
         for j, h in enumerate(head):
-            tk.Label(pg, text=h, font=("맑은고딕", 11, "bold"),
-                     width=10 if j else 14).grid(row=1, column=j, padx=2, pady=2)
-        self.rows_f = tk.Frame(pg)
-        self.rows_f.grid(row=2, column=0, columnspan=8, sticky="nsew")
+            tk.Label(body, text=h, font=("맑은고딕", 11, "bold"),
+                     width=10 if j else 14).grid(row=0, column=j, padx=2, pady=2)
+        self.rows_f = tk.Frame(body)
+        self.rows_f.grid(row=1, column=0, columnspan=8, sticky="nsew")
 
         add = tk.Frame(pg)
-        add.grid(row=3, column=0, columnspan=8, pady=10)
+        add.pack(pady=10)
         tk.Label(add, text="새 메뉴:", font=("맑은고딕", 11, "bold")).pack(side="left")
         self.n_name = tk.Entry(add, width=12, font=("맑은고딕", 11))
         self.n_name.pack(side="left", padx=2)
