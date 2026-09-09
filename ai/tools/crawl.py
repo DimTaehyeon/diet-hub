@@ -26,7 +26,7 @@ def valid_menu(menu: str) -> bool:
     return menu in [l.strip() for l in p.read_text(encoding="utf-8").splitlines()]
 
 
-def crawl(menu: str, num: int, engine: str = "bing"):
+def crawl(menu: str, num: int, engine: str = "google"):
     if not valid_menu(menu):
         raise ValueError(f"classes.txt에 없는 메뉴: {menu}")
     out = RAW / menu
@@ -58,7 +58,7 @@ def main():
     ap = argparse.ArgumentParser(description="메뉴 이미지 크롤링")
     ap.add_argument("--menu", required=True, help="예: 라면 (일식라멘 제외 쿼리 자동)")
     ap.add_argument("--num", type=int, default=120)
-    ap.add_argument("--engine", default="bing", choices=["bing", "google"])
+    ap.add_argument("--engine", default="google", choices=["bing", "google"])
     a = ap.parse_args()
     crawl(a.menu, a.num, a.engine)
 
