@@ -35,7 +35,8 @@ def _classes():
     p = (Path(override) if Path(override).is_absolute()
          else MODELS.parent / override) if override else MODELS / "classes.txt"
     if p.exists():
-        return [l.strip() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
+        return [l.strip() for l in p.read_text(encoding="utf-8").splitlines()
+                if l.strip() and not l.strip().startswith("#")]
     return []
 
 

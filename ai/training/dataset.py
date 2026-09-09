@@ -39,7 +39,9 @@ class FoodImageDataset(Dataset):
         classes_path = (Path(override) if Path(override).is_absolute()
                         else models_dir.parent / override) if override else models_dir / "classes.txt"
         if classes_path.exists():
-            self.classes = [l.strip() for l in classes_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+            # '#' 주석행 제외 (classes_mini.txt 설명행 등)
+            self.classes = [l.strip() for l in classes_path.read_text(encoding="utf-8").splitlines()
+                            if l.strip() and not l.strip().startswith("#")]
         else:
             self.classes = sorted([d.name for d in self.root.iterdir() if d.is_dir()])
         self.class_to_idx = {c: i for i, c in enumerate(self.classes)}
