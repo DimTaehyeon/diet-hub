@@ -88,7 +88,9 @@ def _patch_backend_seed(base: Path, name: str, cat: str, kcal_val: int):
     close = t.find("\n]", m.end())
     if close < 0:
         return False
-    ins = f',\n    ("{name}", "{cat}", {kcal_val})'
+    # 마지막 항목에 이미 콤마가 있으면 추가 콤마 생략 (,, 문법 오류 방지)
+    prefix = "" if t[:close].rstrip().endswith(",") else ","
+    ins = f"{prefix}\n    (\"{name}\", \"{cat}\", {kcal_val})"
     seed.write_text(t[:close] + ins + t[close:], encoding="utf-8")
     return True
 
