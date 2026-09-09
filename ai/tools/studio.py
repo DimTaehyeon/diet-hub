@@ -96,12 +96,10 @@ class Studio(tk.Tk):
         self.n_name = tk.Entry(add, width=12, font=("맑은고딕", 11))
         self.n_name.pack(side="left", padx=2)
         tk.Label(add, text="분류:", font=("맑은고딕", 11)).pack(side="left")
-        self.n_cat = tk.Entry(add, width=8, font=("맑은고딕", 11))
-        self.n_cat.insert(0, "한식")
-        self.n_cat.pack(side="left", padx=2)
-        tk.Label(add, text="kcal:", font=("맑은고딕", 11)).pack(side="left")
+        self.n_cat = tk.StringVar(value="한식")
+        tk.OptionMenu(add, self.n_cat, "한식", "중식", "일식", "양식", "분식", "기타").pack(side="left", padx=2)
+        tk.Label(add, text="kcal(1인분):", font=("맑은고딕", 11)).pack(side="left")
         self.n_kcal = tk.Entry(add, width=7, font=("맑은고딕", 11))
-        self.n_kcal.insert(0, "500")
         self.n_kcal.pack(side="left", padx=2)
         tk.Button(add, text="추가", bg="#A5D6A7", font=("맑은고딕", 11, "bold"),
                   command=self._add).pack(side="left", padx=6)
@@ -156,10 +154,16 @@ class Studio(tk.Tk):
                          cwd=str(Path(__file__).resolve().parent))
 
     def _add(self):
+        kcal_s = self.n_kcal.get().strip()
+        if not self.n_name.get().strip():
+            messagebox.showwarning("알림", "메뉴 이름을 입력하세요.")
+            return
         try:
-            kcal = int(self.n_kcal.get())
+            kcal = int(kcal_s)
+            if not (0 < kcal <= 5000):
+                raise ValueError
         except ValueError:
-            messagebox.showwarning("알림", "kcal은 숫자입니다.")
+            messagebox.showwarning("알림", "kcal은 1~5000 숫자로 입력하세요.\n(모르면 포털에 '메뉴명 칼로리' 검색)")
             return
         ok, msg = R.add_class(BASE, self.n_name.get(), self.n_cat.get(), kcal)
         (messagebox.showinfo if ok else messagebox.showwarning)("알림", msg)
