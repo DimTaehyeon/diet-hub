@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
     return Scaffold(
-      appBar: AppBar(title: const Text('오늘 뭐 먹었어? ($today)')),
+      appBar: AppBar(title: Text('오늘 뭐 먹었어? ($today)')),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
