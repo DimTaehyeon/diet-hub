@@ -1,3 +1,4 @@
+import os
 import sys
 import uuid
 from pathlib import Path
@@ -9,7 +10,19 @@ router = APIRouter(prefix="/predict", tags=["predict"])
 ROOT = Path(__file__).resolve().parents[3]  # .../인공지능
 UPLOAD_DIR = ROOT / "backend" / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+# 기본 best.pt. 미니 테스트時は MODEL_WEIGHTS=../models/mini.pt + DIET_CLASSES=models/classes_mini.txt
 BEST_PT = ROOT / "ai" / "models" / "best.pt"
+
+
+def weights_path() -> str:
+    return os.environ.get("MODEL_WEIGHTS", "../models/best.pt")
+
+
+def model_file_exists() -> bool:
+    w = weights_path()
+    p = Path(w)
+    base = ROOT / "ai" / "training"
+    return (p if p.is_absolute() else base / w).exists()
 
 ALLOWED_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 MAX_BYTES = 10 * 1024 * 1024
@@ -22,7 +35,7 @@ def run_inference(saved_path: str):
         if training_dir not in sys.path:
             sys.path.insert(0, training_dir)
         from predict import predict as ai_predict  # noqa: E402
-        return ai_predict(saved_path, topk=3)
+        return ai_predict(saved_path, weights=weights_path(), topk=3)
     except Exception as e:
         return [{"label": "직접입력 필요", "confidence": 0.0, "kcal": 0,
                  "reason": f"추론 실패: {str(e)[:200]}"}]

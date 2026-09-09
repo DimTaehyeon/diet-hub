@@ -16,7 +16,9 @@ SEED_FOODS = [
     ("김밥", "분식", 480), ("떡볶이", "분식", 620), ("삼계탕", "한식", 780),
     ("냉면", "한식", 540), ("짜장면", "중식", 750), ("짬뽕", "중식", 680),
     ("초밥", "일식", 560), ("샐러드", "양식", 280), ("계란후라이", "한식", 180),
-    ("밥", "한식", 300), ("국수", "한식", 520), ("탕수육", "중식", 650),
+    ("밥", "한식", 300), ("국수", "한식", 520), ("탕수육", "중식", 650),,
+    ("청국", "한식", 275),
+    ("청국장", "한식", 275)
 ]
 
 
@@ -36,9 +38,8 @@ def seed_foods():
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     seed_foods()
-    # 모델 1회 프리로드 체크 (torch 없어도 서버는 정상 기동, 폴백 모드)
-    best = Path(__file__).resolve().parents[3] / "ai" / "models" / "best.pt"
-    app.state.model_loaded = best.exists()
+    # 모델 1회 프리로드 체크 (MODEL_WEIGHTS 환경변수 반영, 없어도 폴백 모드 기동)
+    app.state.model_loaded = predict.model_file_exists()
     try:
         import torch  # noqa: F401
         app.state.torch_available = True
